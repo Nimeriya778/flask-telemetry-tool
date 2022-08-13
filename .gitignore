@@ -1,0 +1,12 @@
+*.tld
+*.docx
+*.sqlite
+.mypy_cache
+/dist
+__pycache__
+*.egg-info
+.tox
+/.idea/
+/venv/
+instance/
+/tags

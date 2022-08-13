@@ -1,0 +1,50 @@
+<!doctype html>
+<title>{% block title %}{% endblock %}LTU Telemetry</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+<div class="description">
+ <h1>LTU Telemetry Tool</h1>
+  <p>
+    Parse and plot LTU telemetry
+  </p>
+</div>
+
+
+<div class="upload">
+  <h1>Upload a file</h1>
+  <form action="/upload" method=post enctype=multipart/form-data>
+      <input type="file" name=file>
+      <br><br>
+      <input type=submit value="Submit">
+
+  </form>
+
+</div>
+
+<div class="set">
+  <h1>Choose an LTU set:</h1>
+    <form action="/action_page.php">
+      <label for="set"></label>
+      <select name="set" id="set">
+        <optgroup label="LTU sets">
+          <option value="LTU1_1">LTU1_1</option>
+          <option value="LTU2_1">LTU2_1</option>
+          <option value="LTU3_1">LTU3_1</option>
+        </optgroup>
+      </select>
+      <br><br>
+      <input type="submit" value="Submit">
+    </form>
+</div>
+
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">Upload</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</section>
