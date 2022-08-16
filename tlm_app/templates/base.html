@@ -1,9 +1,13 @@
 <!doctype html>
-<title>{% block title %}{% endblock %}LTU Telemetry</title>
+
+<html>
+<title>LTU Telemetry</title>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
+{% block content %}
+<body>
 <div class="description">
  <h1>LTU Telemetry Tool</h1>
   <p>
@@ -11,22 +15,18 @@
   </p>
 </div>
 
-
 <div class="upload">
   <h1>Upload a file</h1>
-  <form action="/upload" method=post enctype=multipart/form-data>
+  <form action="/upload" method="post" enctype="multipart/form-data">
       <input type="file" name=file>
       <br><br>
       <input type=submit value="Submit">
-
   </form>
-
 </div>
 
 <div class="set">
   <h1>Choose an LTU set:</h1>
-    <form action="/action_page.php">
-      <label for="set"></label>
+    <form action="/table">
       <select name="set" id="set">
         <optgroup label="LTU sets">
           <option value="LTU1_1">LTU1_1</option>
@@ -35,16 +35,23 @@
         </optgroup>
       </select>
       <br><br>
+      <select name="subset" id="subset">
+        <optgroup label="LTU subset">
+          <option value="brd">brd</option>
+          <option value="ldd_lt">ldd_lt</option>
+          <option value="ldd_rt">ldd_rt</option>
+          <option value="ldd_volt">ldd_volt</option>
+          <option value="pls_hv">pls_hv</option>
+          <option value="pls_ld">pls_ld</option>
+          <option value="pls_cur">pls_cur</option>
+          <option value="chg_cur">chg_cur</option>
+          <option value="chg_volt">chg_volt</option>
+        </optgroup>
+      </select>
+      <br><br>
       <input type="submit" value="Submit">
     </form>
 </div>
-
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">Upload</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+</body>
+</html>
+{% endblock %}

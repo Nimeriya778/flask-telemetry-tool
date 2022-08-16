@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{table_name}} set, {{subset_name}} subset:</h2>
+<body>
+<div class="table">
+  <table>
+
+    <thead>
+      <tr>
+        {% for column in columns %}
+        <th>{{ column }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for row in rows %}
+    <tr>
+      {% for cell in row %}
+      <td>{{ cell }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+</div>
+</body>
+{% endblock %}

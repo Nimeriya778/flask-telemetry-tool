@@ -1,6 +1,11 @@
+"""
+Application factory, configuration and URL description
+"""
+
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from .upload import upload_file
+from .ltu_db import init_app, get_db
 
 UPLOAD_FOLDER = "flask-telemetry-tool/tlm_app/"
 
@@ -33,6 +38,9 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    # register the database commands
+    init_app(app)
+
     @app.route("/")
     def tlm(name=None):
         return render_template("base.html", name=name)
@@ -40,5 +48,22 @@ def create_app(test_config=None):
     @app.route("/upload", methods=["GET", "POST"])
     def tlm_upload():
         return upload_file()
+
+    @app.route("/table")
+    def view_table():
+        table_name = request.args.get("set")
+        # table_data = request.args.get('plot')
+        script = f"SELECT * FROM {table_name}"
+        cursor_obj = get_db().cursor().execute(script)
+        columns = [i[0].upper().replace("_", ".") for i in cursor_obj.description]
+        subset_name = request.args.get("subset").upper().replace("_", ".")
+
+        return render_template(
+            "table.html",
+            table_name=table_name,
+            rows=cursor_obj,
+            columns=columns,
+            subset_name=subset_name,
+        )
 
     return app
