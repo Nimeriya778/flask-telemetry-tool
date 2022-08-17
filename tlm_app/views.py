@@ -3,9 +3,10 @@ Application factory, configuration and URL description
 """
 
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from .upload import upload_file
 from .ltu_db import init_app, get_db
+from .subsets import subsets
 
 UPLOAD_FOLDER = "flask-telemetry-tool/tlm_app/"
 
@@ -51,19 +52,23 @@ def create_app(test_config=None):
 
     @app.route("/table")
     def view_table():
-        table_name = request.args.get("set")
-        # table_data = request.args.get('plot')
-        script = f"SELECT * FROM {table_name}"
+        table = request.args.get("set")
+        subset = request.args.get("subset")
+
+        if subset not in subsets:
+            return redirect("/")
+
+        script = f"SELECT {','.join(subsets[subset])} FROM {table}"
+
         cursor_obj = get_db().cursor().execute(script)
-        columns = [i[0].upper().replace("_", ".") for i in cursor_obj.description]
-        subset_name = request.args.get("subset").upper().replace("_", ".")
+        columns = [i[0] for i in cursor_obj.description]
 
         return render_template(
             "table.html",
-            table_name=table_name,
+            table=table,
             rows=cursor_obj,
             columns=columns,
-            subset_name=subset_name,
+            subset=subset,
         )
 
     return app

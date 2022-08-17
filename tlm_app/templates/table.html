@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{table_name}} set, {{subset_name}} subset:</h2>
+<h2>{{ table|upper|replace("_", ".") }} set, {{subset|upper|replace("_", ".") }} subset:</h2>
 <body>
 <div class="table">
   <table>
@@ -8,7 +8,7 @@
     <thead>
       <tr>
         {% for column in columns %}
-        <th>{{ column }}</th>
+        <th>{{ column|upper|replace("_", ".") }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -17,7 +17,8 @@
     {% for row in rows %}
     <tr>
       {% for cell in row %}
-      <td>{{ cell }}</td>
+
+      <td>{{ "{:.3f}".format(cell) }}</td>
       {% endfor %}
     </tr>
     {% endfor %}
