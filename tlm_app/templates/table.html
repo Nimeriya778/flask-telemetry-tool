@@ -4,7 +4,6 @@
 <body>
 <div class="table">
   <table>
-
     <thead>
       <tr>
         {% for column in columns %}
@@ -16,15 +15,19 @@
     <tbody>
     {% for row in rows %}
     <tr>
-      {% for cell in row %}
-
-      <td>{{ "{:.3f}".format(cell) }}</td>
+      <td>{{ row | first | dt }}</td>
+      {% for cell in row[1:] %}
+      <td>{{ cell | fmt }}</td>
       {% endfor %}
     </tr>
     {% endfor %}
     </tbody>
-
 </table>
+</div>
+
+<div class="plot">
+  <h2>Visualize the data</h2>
+  <input type="submit" value="Plot">
 </div>
 </body>
 {% endblock %}

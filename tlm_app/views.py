@@ -3,6 +3,7 @@ Application factory, configuration and URL description
 """
 
 import os
+from datetime import datetime
 from flask import Flask, render_template, request, redirect
 from .upload import upload_file
 from .ltu_db import init_app, get_db
@@ -49,6 +50,14 @@ def create_app(test_config=None):
     @app.route("/upload", methods=["GET", "POST"])
     def tlm_upload():
         return upload_file()
+
+    @app.template_filter("dt")
+    def to_time(timestamp):
+        return datetime.fromtimestamp(timestamp)
+
+    @app.template_filter("fmt")
+    def represent_float(float_data):
+        return f"{float_data:.3f}"
 
     @app.route("/table")
     def view_table():
