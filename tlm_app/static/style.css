@@ -9,7 +9,6 @@ html {
 
 body {
   width: 55%;
-  height: 100%;
   margin: 0 auto;
   padding: 13px;
   margin-top: -20px;
@@ -17,22 +16,23 @@ body {
   background-color: #faee3f;
 }
 
+@media screen and (max-width: 992px) {
+  body {
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .body {
+    width: 300px;
+  }
+}
+
 h1, h2, h3, h4, h5, h6, a {
   font-family: serif;
   color: #377ba8;
   text-align: center;
 }
-
-/* For mobile phones: */
-/*[class*="description"] {
-  width: 50%;
-}
-
-@media only screen and (min-width: 1920px) {
-  .description {width: 50%;}
-  .upload {width: 50%;}
-  .set {width: 50%;}
-}*/
 
 .description {
   text-align: center;
@@ -50,36 +50,47 @@ h1, h2, h3, h4, h5, h6, a {
   margin-bottom: 16px;
   padding: 40px;
   text-align: center;
-  justify-content: center;
-  align-items: center;
   border: 3px solid #dcccf7;
   border-radius: 12px;
 }
 
 .upload input[type=file] {
   background: #dcccf7;
+  color: #377ba8;
+  font-family: san-serif;
 }
 
 .upload input[type=submit] {
   background: #ceb8f4;
   text-align: center;
+  border-radius: 12px;
+  padding: 0.5em;
   width: 30%;
-}
-
-input::file-selector-button {
-  color: #377ba8;
-  padding: 0.6em;
-  border: 5px thin #ceb0f4;
-  border-radius: 99rem;
   font-family: san-serif;
   font-size: large;
   font-weight: bold;
+  color: #377ba8;
+  border: 2px solid #c2a7f1;
+}
+
+input::file-selector-button {
   background: #ceb8f4;
-  width: 40%;
+  color: #377ba8;
+  padding: 0.7em;
+  border: 2px solid #c2a7f1;
+  border-radius: 12px;
+  font-family: san-serif;
+  font-size: large;
+  font-weight: bold;
 }
 
 input::file-selector-button:hover {
-  background-color: #ceb0f4;
+  background-color: #c2a7f1;
+  cursor: pointer;
+}
+
+.upload input[type=submit]:hover {
+  background: #c2a7f1;
   cursor: pointer;
 }
 
@@ -88,33 +99,40 @@ input::file-selector-button:hover {
   min-height: 250px;
   margin-bottom: 16px;
   padding: 40px;
-  justify-content: center;
-  align-items: center;
-  border: 3px solid #bacbf7;
   background: #bacbf7;
   border-radius: 12px;
 }
 
-  input, select {
+.set input, select {
   width: 30%;
-  background: #bad9ff;
   border-radius: 12px;
-  padding: 0.6em;
+  padding: 0.5em;
   font-family: san-serif;
   font-size: large;
   font-weight: bold;
   color: #377ba8;
   text-align: center;
+  border: 2px solid #8da9f2;
+  background: #a4bbf4;
+}
+
+.set input:hover {
+  background-color: #8da9f2;
+  cursor: pointer;
+}
+
+.set select:hover {
+  background-color: #8da9f2;
+  cursor: pointer;
 }
 
 .table {
   text-align: center;
-  height: 400px;
-  margin-bottom: 16px;
-  border: 3px solid #bacbf7;
-  background: #bacbf7;
+  height: 800px;
+  background: #dcccf7;
   border-radius: 12px;
   overflow: scroll;
+  margin-bottom: 16px;
 }
 
 table {
@@ -123,7 +141,7 @@ table {
 }
 
 table thead {
-  background: #0B6FA4;
+  background: #c2a7f1;
   color: #FFFFFF;
   text-align: center;
   font-size: 16px;
@@ -131,9 +149,40 @@ table thead {
 
 table tbody {
   background: #D0E4F5;
+  font-size: 16px;
 }
 
 table tbody td {
-  font-size: 16px;
   padding: 10px;
+}
+
+.plot {
+  border-radius: 12px;
+  font-family: san-serif;
+  font-size: large;
+  font-weight: bold;
+  color: #377ba8;
+  text-align: center;
+  background: #dcccf7;
+  height: 150px;
+  margin-bottom: 16px;
+  padding: 40px;
+}
+
+.plot input {
+  width: 20%;
+  border-radius: 12px;
+  font-family: san-serif;
+  font-size: large;
+  font-weight: bold;
+  color: #377ba8;
+  text-align: center;
+  border: 2px solid #c2a7f1;
+  background: #ceb8f4;
+  padding: 0.5em;
+}
+
+.plot input:hover {
+  background-color: #c2a7f1;
+  cursor: pointer;
 }
