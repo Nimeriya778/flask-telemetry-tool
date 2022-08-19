@@ -1,10 +1,9 @@
 html {
   font-family: sans-serif;
-  background: #eee;
   padding: 1rem;
-  background-image: url("laser_cat.jpg"), url("laser_cat.jpg");
-  background-position: left top, right top;
-  background-repeat: repeat-y, repeat-y;
+  background-image: url("laser_cat.jpg");
+  /*background-position: left top, right top;*/
+  background-repeat: repeat, repeat;
 }
 
 body {
@@ -12,7 +11,6 @@ body {
   margin: 0 auto;
   padding: 13px;
   margin-top: -20px;
-  margin-bottom: -20px;
   background-color: #faee3f;
 }
 
@@ -36,22 +34,23 @@ h1, h2, h3, h4, h5, h6, a {
 
 .description {
   text-align: center;
-  height: 250px;
+  margin-top: 16px;
   margin-bottom: 16px;
-  padding: 40px;
   background: #d0f6d2;
   border: 3px solid #d0f6d2;
   border-radius: 12px;
+  box-sizing: border-box;
+  padding: 40px;
 }
 
 .upload {
   background: #dcccf7;
-  height: 250px;
   margin-bottom: 16px;
   padding: 40px;
   text-align: center;
   border: 3px solid #dcccf7;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 
 .upload input[type=file] {
@@ -96,11 +95,11 @@ input::file-selector-button:hover {
 
 .set {
   text-align: center;
-  min-height: 250px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   padding: 40px;
   background: #bacbf7;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 
 .set input, select {
@@ -128,11 +127,11 @@ input::file-selector-button:hover {
 
 .table {
   text-align: center;
-  height: 800px;
   background: #dcccf7;
   border-radius: 12px;
   overflow: scroll;
   margin-bottom: 16px;
+  height: 686px;
 }
 
 table {
@@ -164,8 +163,6 @@ table tbody td {
   color: #377ba8;
   text-align: center;
   background: #dcccf7;
-  height: 150px;
-  margin-bottom: 16px;
   padding: 40px;
 }
 
@@ -180,9 +177,22 @@ table tbody td {
   border: 2px solid #c2a7f1;
   background: #ceb8f4;
   padding: 0.5em;
+  transition-duration: 0.4s;
 }
 
 .plot input:hover {
   background-color: #c2a7f1;
   cursor: pointer;
+}
+
+.visualization {
+  text-align: center;
+  background: #dcccf7;
+  border-radius: 12px;
+  min-height: 400px;
+}
+
+img {
+  background: #fff;
+  height: 200px;
 }
