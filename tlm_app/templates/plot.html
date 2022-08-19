@@ -1,0 +1,9 @@
+{% extends 'table.html' %}
+{% block content %}
+<h2>Visualization</h2>
+<body>
+<div class="visualization">
+    <img src="{{ url_for('user_image', filename=file.image) }}">
+</div>
+</body>
+{% endblock %}

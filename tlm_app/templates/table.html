@@ -27,7 +27,11 @@
 
 <div class="plot">
   <h2>Visualize the data</h2>
-  <input type="submit" value="Plot">
+  <form action="/plot">
+    <input type="hidden" name="set" id="set" value="{{ table }}">
+    <input type="hidden" name="subset" id="subset" value="{{ subset }}">
+    <input type="submit" value="Plot">
+  </form>
 </div>
 </body>
 {% endblock %}
