@@ -189,10 +189,8 @@ table tbody td {
   text-align: center;
   background: #dcccf7;
   border-radius: 12px;
-  min-height: 400px;
 }
 
 img {
-  background: #fff;
-  height: 200px;
+  margin: 10px auto;
 }
