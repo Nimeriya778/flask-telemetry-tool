@@ -3,12 +3,27 @@ Plot settings
 """
 
 from datetime import datetime
+from sqlite3 import Cursor
 import matplotlib.dates as md  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
 
+def collect_for_plot(cursor_obj: Cursor) -> list[list]:
+    """
+    Gather data into multiple lists
+    """
+
+    params_list: list[list] = []
+    for _ in cursor_obj.description:
+        params_list.append([])
+    for row in cursor_obj:
+        for index, elem in enumerate(row):
+            params_list[index].append(elem)
+    return params_list
+
+
 def plot_telemetry(
-    filename: str, columns: list[list], plot_list: list[str], title: str = "LTU1_1"
+    filename: str, params_list: list[list], columns: list[str], title: str = "LTU1_1"
 ) -> None:
     """
     Create a plot
@@ -19,20 +34,20 @@ def plot_telemetry(
     plt.minorticks_on()
     plt.grid(which="minor", linewidth=0.5, linestyle="--")
     plt.grid(which="major", color="grey", linewidth=1)
-    y_name, title_name = get_labels(plot_list)
+    y_name, title_name = get_labels(columns)
     plt.ylabel(y_name, fontsize=16)
     plt.title(f"{title} {title_name}", fontsize=16)
     plt.xlabel("Time", fontsize=16)
-    columns[0] = [md.date2num(datetime.fromtimestamp(i)) for i in columns[0]]
+    params_list[0] = [md.date2num(datetime.fromtimestamp(i)) for i in params_list[0]]
     axes = plt.gca()
     fig.autofmt_xdate()
     xfmt = md.DateFormatter("%Y-%m-%d")
     axes.xaxis.set_major_formatter(xfmt)
-    for param in columns[1:]:
-        plt.plot(columns[0], param)
+    for param in params_list[1:]:
+        plt.plot(params_list[0], param)
 
     # Shows colored parameter names labels on a plot
-    plt.legend(plot_list[1:], loc="best", prop={"size": 10})
+    plt.legend(columns[1:], loc="best", prop={"size": 10})
 
     plt.savefig(filename)
 
