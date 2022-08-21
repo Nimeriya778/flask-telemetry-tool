@@ -4,7 +4,7 @@ Application factory, configuration and URL description
 
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, abort
 from .upload import upload_file
 from .ltu_db import init_app, get_db
 from .subsets import subsets
@@ -59,18 +59,22 @@ def create_app(test_config=None):
     def represent_float(float_data):
         return f"{float_data:.3f}"
 
+    def collect_data(subset, table):
+        script = f"SELECT {','.join(subsets[subset])} FROM {table}"
+        cursor_obj = get_db().cursor().execute(script)
+        columns = [i[0] for i in cursor_obj.description]
+
+        return cursor_obj, columns
+
     @app.route("/table")
     def view_table():
         table = request.args.get("set")
         subset = request.args.get("subset")
 
         if subset not in subsets:
-            return redirect("/")
+            abort(400, f"No such subset '{subset}'")
 
-        script = f"SELECT {','.join(subsets[subset])} FROM {table}"
-
-        cursor_obj = get_db().cursor().execute(script)
-        columns = [i[0] for i in cursor_obj.description]
+        cursor_obj, columns = collect_data(subset, table)
 
         return render_template(
             "table.html",
