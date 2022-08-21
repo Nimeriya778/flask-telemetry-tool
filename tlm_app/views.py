@@ -4,10 +4,11 @@ Application factory, configuration and URL description
 
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, send_file, send_from_directory
 from .upload import upload_file
 from .ltu_db import init_app, get_db
 from .subsets import subsets
+from .plot import collect_for_plot, plot_telemetry
 
 UPLOAD_FOLDER = "flask-telemetry-tool/tlm_app/"
 
@@ -83,5 +84,30 @@ def create_app(test_config=None):
             columns=columns,
             subset=subset,
         )
+
+    @app.route("/plot")
+    def view_plot():
+        table = request.args.get("set")
+        subset = request.args.get("subset")
+
+        if subset not in subsets:
+            abort(400, f"No such subset '{subset}'")
+
+        cursor_obj, columns = collect_data(subset, table)
+        params_list = collect_for_plot(cursor_obj)
+        filename = "brd_tlm.png"
+        full_path = os.path.join(app.instance_path, "plots", filename)
+        plot_telemetry(full_path, params_list, columns)
+
+        return render_template(
+            "plot.html",
+            filename=filename,
+        )
+
+    @app.route("/plot/<filename>")
+    def show_plot(filename):
+        filename = "brd_tlm.png"
+        full_path = os.path.join(app.instance_path, "plots", filename)
+        return send_file(full_path, mimetype="image/png")
 
     return app
