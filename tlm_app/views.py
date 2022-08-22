@@ -4,7 +4,7 @@ Application factory, configuration and URL description
 
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, abort, send_file, send_from_directory
+from flask import Flask, render_template, request, abort, send_file
 from .upload import upload_file
 from .ltu_db import init_app, get_db
 from .subsets import subsets
@@ -95,9 +95,9 @@ def create_app(test_config=None):
 
         cursor_obj, columns = collect_data(subset, table)
         params_list = collect_for_plot(cursor_obj)
-        filename = "brd_tlm.png"
+        filename = f"{table}_{subset}.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
-        plot_telemetry(full_path, params_list, columns)
+        plot_telemetry(full_path, params_list, columns, table)
 
         return render_template(
             "plot.html",
@@ -106,7 +106,6 @@ def create_app(test_config=None):
 
     @app.route("/plot/<filename>")
     def show_plot(filename):
-        filename = "brd_tlm.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
         return send_file(full_path, mimetype="image/png")
 
