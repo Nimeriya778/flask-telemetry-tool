@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  width: 55%;
+  width: 45%;
   margin: 0 auto;
   padding: 13px;
   margin-top: -20px;
@@ -99,11 +99,16 @@ input::file-selector-button:hover {
   padding: 40px;
   background: #bacbf7;
   border-radius: 12px;
-  box-sizing: border-box;
+}
+.set input {
+  width: 30%;
+}
+
+.set select {
+  width: 16%;
 }
 
 .set input, select {
-  width: 30%;
   border-radius: 12px;
   padding: 0.5em;
   font-family: san-serif;
@@ -113,6 +118,8 @@ input::file-selector-button:hover {
   text-align: center;
   border: 2px solid #8da9f2;
   background: #a4bbf4;
+  justify-content: center;
+  align-items: center;
 }
 
 .set input:hover {
@@ -193,4 +200,14 @@ table tbody td {
 
 img {
   margin: 10px auto;
+}
+
+label {
+  font-family: san-serif;
+  font-size: large;
+  font-weight: bold;
+  color: #377ba8;
+  display: inline-block;
+  width: 5em;
+  padding: 5px;
 }

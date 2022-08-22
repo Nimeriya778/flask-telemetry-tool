@@ -25,8 +25,9 @@
 </div>
 
 <div class="set">
-  <h1>Choose an LTU set:</h1>
+  <h1>View LTU table</h1>
     <form action="/table">
+      <label for="set">Channel</label>
       <select name="set" id="set">
         <optgroup label="LTU sets">
           <option value="LTU1_1">LTU1.1</option>
@@ -35,6 +36,7 @@
         </optgroup>
       </select>
       <br><br>
+      <label for="subset">Subset</label>
       <select name="subset" id="subset">
         <optgroup label="LTU subsets">
           <option value="brd">BRD</option>
