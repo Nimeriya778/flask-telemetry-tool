@@ -3,7 +3,7 @@ Uploading LTU traces
 """
 
 import os
-from flask import flash, request, redirect, url_for, current_app
+from flask import flash, request, redirect, render_template, current_app
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {"tld"}
@@ -41,6 +41,4 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
 
-            return redirect(url_for("download_file", name=filename))
-
-    return redirect(request.url)
+    return render_template("upload.html")
