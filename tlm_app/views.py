@@ -10,8 +10,6 @@ from .ltu_db import init_app, get_db
 from .subsets import subsets
 from .plot import collect_for_plot, plot_telemetry
 
-UPLOAD_FOLDER = "flask-telemetry-tool/tlm_app/"
-
 
 def create_app(test_config=None):
     """
@@ -25,7 +23,7 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         # store the database in the instance folder
         DATABASE=os.path.join(app.instance_path, "ltu-tel.sqlite"),
-        UPLOAD_FOLDER=UPLOAD_FOLDER,
+        UPLOAD_FOLDER=app.instance_path,
     )
 
     if test_config is None:
