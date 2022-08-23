@@ -3,7 +3,7 @@ Uploading LTU traces
 """
 
 import os
-from flask import flash, request, redirect, render_template, current_app
+from flask import flash, request, render_template, current_app
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {"tld"}
@@ -25,20 +25,16 @@ def upload_file():
     """
 
     if request.method == "POST":
+
         if "file" not in request.files:
             flash("No file part")
 
-            return redirect(request.url)
-
-        file = request.files["file"]
-
-        if file.filename == "":
+        elif (file := request.files["file"]).filename == "":
             flash("No selected file")
 
-            return redirect(request.url)
-
-        if file and allowed_file(file.filename):
+        elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+            flash("Your file has been successfully uploaded")
 
     return render_template("upload.html")

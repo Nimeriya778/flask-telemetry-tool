@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Your file is successfully uploaded</h2>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <div class="file">
   <a href="{{ url_for('tlm') }}">Back to the main page</a>
