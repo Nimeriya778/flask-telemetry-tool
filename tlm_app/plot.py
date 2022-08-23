@@ -4,8 +4,11 @@ Plot settings
 
 from datetime import datetime
 from sqlite3 import Cursor
+import matplotlib # type: ignore
 import matplotlib.dates as md  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
+
+matplotlib.use("Agg")
 
 
 def collect_for_plot(cursor_obj: Cursor) -> list[list]:
@@ -29,7 +32,7 @@ def plot_telemetry(
     Create a plot
     """
 
-    fig = plt.figure()
+    fig = plt.figure(dpi=150)
     plt.tick_params(axis="both", which="major", labelsize=10)
     plt.minorticks_on()
     plt.grid(which="minor", linewidth=0.5, linestyle="--")
