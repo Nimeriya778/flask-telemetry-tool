@@ -1,17 +1,14 @@
-html {
-  font-family: sans-serif;
-  padding: 1rem;
-  background-image: url("laser_cat.jpg");
-  /*background-position: left top, right top;*/
-  background-repeat: repeat, repeat;
+* {
+  text-align: center;
+  font-family: serif;
+  color: #377ba8;
+  border-radius: 12px;
 }
 
-body {
-  width: 45%;
-  margin: 0 auto;
-  padding: 13px;
-  margin-top: -20px;
-  background-color: #faee3f;
+html {
+  padding: 1rem;
+  background-image: url("laser_cat.jpg");
+  background-repeat: repeat;
 }
 
 @media screen and (max-width: 992px) {
@@ -26,119 +23,91 @@ body {
   }
 }
 
-h1, h2, h3, h4, h5, h6, a {
-  font-family: serif;
-  color: #377ba8;
-  text-align: center;
+body {
+  width: 45%;
+  margin: 0 auto;
+  padding: 13px;
+  margin-top: -20px;
+  background-color: #faee3f;
+}
+
+body.image {
+  width: 55%;
+}
+
+div {
+  margin-bottom: 16px;
+  padding: 40px;
 }
 
 .description {
-  text-align: center;
   margin-top: 16px;
-  margin-bottom: 16px;
   background: #d0f6d2;
-  border: 3px solid #d0f6d2;
-  border-radius: 12px;
-  box-sizing: border-box;
-  padding: 40px;
 }
 
-.upload {
+.upload, .uploaded_file, .plot, .visual {
   background: #dcccf7;
-  margin-bottom: 16px;
-  padding: 40px;
-  text-align: center;
-  border: 3px solid #dcccf7;
-  border-radius: 12px;
-  box-sizing: border-box;
 }
 
-.upload input[type=file] {
-  background: #dcccf7;
-  color: #377ba8;
-  font-family: san-serif;
+.set {
+  background: #bacbf7;
 }
 
-.upload input[type=submit] {
-  background: #ceb8f4;
-  text-align: center;
-  border-radius: 12px;
-  padding: 0.5em;
-  width: 30%;
-  font-family: san-serif;
-  font-size: large;
-  font-weight: bold;
+input, select, label, input::file-selector-button, ul, a, p {
   color: #377ba8;
-  border: 2px solid #c2a7f1;
-}
-
-input::file-selector-button {
-  background: #ceb8f4;
-  color: #377ba8;
-  padding: 0.7em;
-  border: 2px solid #c2a7f1;
-  border-radius: 12px;
-  font-family: san-serif;
+  font-family: serif;
   font-size: large;
   font-weight: bold;
 }
 
-input::file-selector-button:hover {
+input::file-selector-button, #upload_button, #plot_button {
+  background: #ceb8f4;
+  border: 2px solid #c2a7f1;
+  border-radius: 12px;
+  }
+
+input::file-selector-button:hover, #upload_button:hover, #plot_button:hover {
   background-color: #c2a7f1;
   cursor: pointer;
 }
 
-.upload input[type=submit]:hover {
-  background: #c2a7f1;
+input::file-selector-button {
+  padding: 8px 15px;
+}
+
+#upload_button, #plot_button {
+  padding: 10px 20px;
+}
+
+select {
+  width: 110px;
+}
+
+.set select:hover, #view_button:hover {
+  background-color: #8da9f2;
   cursor: pointer;
 }
 
-.set {
-  text-align: center;
-  margin-bottom: 20px;
-  padding: 40px;
-  background: #bacbf7;
-  border-radius: 12px;
-}
-.set input {
-  width: 30%;
+#view_button {
+  width: 215px;
 }
 
-.set select {
-  width: 16%;
-}
-
-.set input, select {
-  border-radius: 12px;
-  padding: 0.5em;
-  font-family: san-serif;
-  font-size: large;
-  font-weight: bold;
-  color: #377ba8;
-  text-align: center;
+select, #view_button {
+  padding: 10px 20px;
   border: 2px solid #8da9f2;
   background: #a4bbf4;
-  justify-content: center;
-  align-items: center;
 }
 
-.set input:hover {
-  background-color: #8da9f2;
-  cursor: pointer;
-}
-
-.set select:hover {
-  background-color: #8da9f2;
-  cursor: pointer;
+label {
+  display: inline-block;
+  padding: 5px;
+  width: 5em;
 }
 
 .table {
-  text-align: center;
   background: #dcccf7;
-  border-radius: 12px;
   overflow: scroll;
-  margin-bottom: 16px;
-  height: 686px;
+  height: 600px;
 }
 
 table {
@@ -146,68 +115,41 @@ table {
   margin-right: auto;
 }
 
+table thead, table tbody {
+  font-size: 16px;
+}
+
 table thead {
   background: #c2a7f1;
-  color: #FFFFFF;
-  text-align: center;
-  font-size: 16px;
  }
 
 table tbody {
   background: #D0E4F5;
-  font-size: 16px;
 }
 
 table tbody td {
   padding: 10px;
 }
 
-.plot {
-  border-radius: 12px;
-  font-family: san-serif;
-  font-size: large;
-  font-weight: bold;
-  color: #377ba8;
-  text-align: center;
-  background: #dcccf7;
-  padding: 40px;
-}
-
-.plot input {
-  width: 20%;
-  border-radius: 12px;
-  font-family: san-serif;
-  font-size: large;
-  font-weight: bold;
-  color: #377ba8;
-  text-align: center;
-  border: 2px solid #c2a7f1;
-  background: #ceb8f4;
-  padding: 0.5em;
-  transition-duration: 0.4s;
-}
-
-.plot input:hover {
-  background-color: #c2a7f1;
-  cursor: pointer;
-}
-
-.visualization {
-  text-align: center;
-  background: #dcccf7;
-  border-radius: 12px;
-}
-
-img {
-  margin: 10px auto;
-}
-
-label {
-  font-family: san-serif;
-  font-size: large;
-  font-weight: bold;
-  color: #377ba8;
-  display: inline-block;
-  width: 5em;
+body.flash {
+  margin-top: 150px;
+  width: 30%;
   padding: 5px;
+}
+
+.alert-error {
+  background-color: #fe4d65;
+  color: white;
+  padding: 8px;
+}
+
+.alert-success {
+  background: #8deab3;
+  color: #188144;
+  padding: 20px;
+}
+
+.flash p {
+  background: #dcccf7;
+  padding: 20px;
 }

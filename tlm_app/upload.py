@@ -27,14 +27,14 @@ def upload_file():
     if request.method == "POST":
 
         if "file" not in request.files:
-            flash("No file part")
+            flash("No file part", "error")
 
         elif (file := request.files["file"]).filename == "":
-            flash("No selected file")
+            flash("No selected file", "error")
 
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
-            flash("Your file has been successfully uploaded")
+            flash("Your file has been successfully uploaded", "success")
 
     return render_template("upload.html")
