@@ -4,7 +4,7 @@ Plot settings
 
 from datetime import datetime
 from sqlite3 import Cursor
-import matplotlib # type: ignore
+import matplotlib  # type: ignore
 import matplotlib.dates as md  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
