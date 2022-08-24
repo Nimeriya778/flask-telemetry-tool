@@ -37,4 +37,7 @@ def upload_file():
             file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
             flash("Your file has been successfully uploaded", "success")
 
+        else:
+            flash("Wrong extension (expected *.tld)", "error")
+
     return render_template("upload.html")
