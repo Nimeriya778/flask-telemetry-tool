@@ -11,18 +11,6 @@ html {
   background-repeat: repeat;
 }
 
-@media screen and (max-width: 992px) {
-  body {
-    width: 40%;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .body {
-    width: 300px;
-  }
-}
-
 body {
   width: 45%;
   margin: 0 auto;
@@ -32,7 +20,11 @@ body {
 }
 
 body.image {
-  width: 55%;
+  width: 1000px;
+}
+
+.visual {
+  padding: 20px;
 }
 
 div {
@@ -152,4 +144,33 @@ body.flash {
 .flash p {
   background: #dcccf7;
   padding: 20px;
+}
+
+img {
+  width: 960px;
+  height: 720px;
+  object-fit: contain;
+}
+
+@media screen and (max-width: 992px) {
+  body {
+    width: 50%;
+  }
+
+  img {
+    width: 720px;
+    height: 540px;
+    object-fit: contain;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  body.image {
+    width: 760px;
+    margin-top: 180px;
+  }
+
+  .visual {
+    padding: 10px;
+  }
 }
