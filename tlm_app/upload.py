@@ -3,8 +3,10 @@ Uploading LTU traces
 """
 
 import os
+from typing import BinaryIO, cast
 from flask import flash, request, render_template, current_app
 from werkzeug.utils import secure_filename
+from .packet import get_telemetry
 
 ALLOWED_EXTENSIONS = {"tld"}
 
@@ -35,7 +37,11 @@ def upload_file():
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
-            flash("Your file has been successfully uploaded", "success")
+            tlm = get_telemetry(cast(BinaryIO, file))
+            flash(
+                f"Your file has been successfully uploaded.\n Read {len(tlm)} packets",
+                "success",
+            )
 
         else:
             flash("Wrong extension (expected *.tld)", "error")
