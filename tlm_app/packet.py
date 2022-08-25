@@ -13,11 +13,12 @@ from .pls import PlsTelemetry
 PACKET_SIZE = 1092
 
 
-def get_telemetry(file: BinaryIO) -> dict[str, list[tuple]]:
+def get_telemetry(file: BinaryIO) -> tuple[dict[str, list[tuple]], int]:
     """
-    Gets telemetry data from packets
+    Get telemetry data from packets.
     """
 
+    count = 0
     tlm: dict[str, list[tuple]] = {"LTU1.1": [], "LTU2.1": [], "LTU3.1": []}
 
     while packet := file.read(PACKET_SIZE):
@@ -34,10 +35,11 @@ def get_telemetry(file: BinaryIO) -> dict[str, list[tuple]]:
         pls = PlsTelemetry.load_from_packet(packet)
 
         tlm[channel].append((cutime, brd, chg, ldd, pls))
+        count += 1
 
-        # Convert keys, since SQL doesn't allow using dots in queries
-        for key in tlm:
-            new_key = key.replace(".", "_")
-            tlm[new_key] = tlm.pop(key)
+    # Convert keys, since SQL doesn't allow using dots in queries
+    for key in tlm.copy():
+        new_key = key.replace(".", "_")
+        tlm[new_key] = tlm.pop(key)
 
-    return tlm
+    return tlm, count
