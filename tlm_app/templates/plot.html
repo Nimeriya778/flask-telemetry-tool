@@ -3,7 +3,9 @@
 <h2>Visualization</h2>
 <body class="image">
 <div class="visual">
-  <img src="{{ url_for('show_plot', filename=filename) }}">
+  <a href="{{ url_for('show_plot', filename=filename) }}">
+    <img src="{{ url_for('show_plot', filename=filename) }}">
+  </a>
 </div>
 </body>
 {% endblock %}

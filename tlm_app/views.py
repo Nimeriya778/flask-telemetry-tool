@@ -4,7 +4,7 @@ Application factory, configuration and URL description
 
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, abort, send_file
+from flask import Flask, render_template, request, abort, send_file, redirect
 from .upload import upload_file
 from .ltu_db import init_app, get_db
 from .subsets import sets
@@ -105,5 +105,10 @@ def create_app(test_config=None):
     def show_plot(filename):
         full_path = os.path.join(app.instance_path, "plots", filename)
         return send_file(full_path, mimetype="image/png")
+
+    @app.route("/plot/<image>")
+    def open_image(filename):
+        full_path = os.path.join(app.instance_path, "plots", filename)
+        return redirect(full_path)
 
     return app
