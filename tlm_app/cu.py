@@ -11,10 +11,11 @@ CUTIME_W = 8
 
 def get_cutime(packet: bytes) -> float:
     """
-    Get CU time in the Unix time format
+    Get CU time in the Unix time format.
     """
 
     tstamp = int.from_bytes(
         packet[CUTIME_OFF: CUTIME_OFF + CUTIME_W], byteorder="little"
     )
+
     return timestamp_to_unixtime(tstamp)

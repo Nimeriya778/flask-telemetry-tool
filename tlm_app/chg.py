@@ -30,7 +30,7 @@ class ChgTelemetry:
     @staticmethod
     def load_from_packet(packet: bytes) -> ChgTelemetry:
         """
-        Get CHG currents and voltages
+        Get CHG currents and voltages.
         """
 
         chg = unpack_from(CHG_PAYLOAD_FMT, packet, CHG_OFF)

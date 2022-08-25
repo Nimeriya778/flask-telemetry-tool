@@ -13,7 +13,7 @@ matplotlib.use("Agg")
 
 def collect_for_plot(cursor_obj: Cursor) -> list[list]:
     """
-    Gather data into multiple lists
+    Gather data into multiple lists.
     """
 
     params_list: list[list] = []
@@ -29,7 +29,7 @@ def plot_telemetry(
     filename: str, params_list: list[list], columns: list[str], title: str = "LTU1_1"
 ) -> None:
     """
-    Create a plot
+    Create a plot.
     """
 
     fig = plt.figure(dpi=150)
@@ -57,7 +57,7 @@ def plot_telemetry(
 
 def get_labels(plot_list: list[str]) -> tuple[str, str]:
     """
-    Get plots labels depending on data
+    Get plots labels depending on data.
     """
 
     if "brd_lt1" in plot_list:

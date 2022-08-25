@@ -51,7 +51,7 @@ class LddTelemetry:
     @staticmethod
     def load_from_packet(packet: bytes) -> LddTelemetry:
         """
-        Get LDD voltages and temperatures
+        Get LDD voltages and temperatures.
         """
 
         channel = get_ltu_channel(packet)

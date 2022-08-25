@@ -27,7 +27,7 @@ class BrdTelemetry:
     @staticmethod
     def load_from_packet(packet: bytes) -> BrdTelemetry:
         """
-        Get BRD temperatures
+        Get BRD temperatures.
         """
 
         temps = unpack_from(BRD_PAYLOAD_FMT, packet, BRD_OFF)

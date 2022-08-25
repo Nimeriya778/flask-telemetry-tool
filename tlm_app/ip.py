@@ -30,8 +30,9 @@ LTU_IP_DICT = {
 
 def get_ltu_channel(packet: bytes) -> str:
     """
-    Returns the LTU channel from LTU IP address
+    Return the LTU channel from LTU IP address.
     """
 
     ip_saddr = IPv4Address(packet[IP_OFF: IP_OFF + 4])
+
     return LTU_IP_DICT[ip_saddr]
