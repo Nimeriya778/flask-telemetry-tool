@@ -41,7 +41,7 @@ div {
   background: #dcccf7;
 }
 
-.set {
+.channel {
   background: #bacbf7;
 }
 
@@ -75,7 +75,7 @@ select {
   width: 110px;
 }
 
-.set select:hover, #view_button:hover {
+.channel select:hover, #view_button:hover {
   background-color: #8da9f2;
   cursor: pointer;
 }
@@ -94,6 +94,35 @@ label {
   display: inline-block;
   padding: 5px;
   width: 5em;
+}
+
+body.flash {
+  margin-top: 150px;
+  width: 30%;
+  padding: 5px;
+}
+
+.flash p {
+  background: #dcccf7;
+  padding: 20px;
+}
+
+.alert-error {
+  background-color: #fe4d65;
+  color: white;
+  padding: 8px;
+}
+
+.alert-success {
+  background: #8deab3;
+  color: #006622;
+  padding: 20px;
+}
+
+.alert-info {
+  background: #a3c2c2;
+  color: #293d3d;
+  padding: 20px;
 }
 
 .table {
@@ -121,29 +150,6 @@ table tbody {
 
 table tbody td {
   padding: 10px;
-}
-
-body.flash {
-  margin-top: 150px;
-  width: 30%;
-  padding: 5px;
-}
-
-.alert-error {
-  background-color: #fe4d65;
-  color: white;
-  padding: 8px;
-}
-
-.alert-success {
-  background: #8deab3;
-  color: #188144;
-  padding: 20px;
-}
-
-.flash p {
-  background: #dcccf7;
-  padding: 20px;
 }
 
 img {

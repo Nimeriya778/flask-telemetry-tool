@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, abort, send_file
 from .upload import upload_file
 from .ltu_db import init_app, get_db
-from .subsets import subsets
+from .subsets import sets
 from .plot import collect_for_plot, plot_telemetry
 
 
@@ -23,7 +23,6 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         # store the database in the instance folder
         DATABASE=os.path.join(app.instance_path, "ltu-tel.sqlite"),
-        UPLOAD_FOLDER=app.instance_path,
     )
 
     if test_config is None:
@@ -58,8 +57,8 @@ def create_app(test_config=None):
     def represent_float(float_data):
         return f"{float_data:.3f}"
 
-    def collect_data(subset, table):
-        script = f"SELECT {','.join(subsets[subset])} FROM {table}"
+    def collect_data(tlm_set, table):
+        script = f"SELECT {','.join(sets[tlm_set])} FROM {table}"
         cursor_obj = get_db().cursor().execute(script)
         columns = [i[0] for i in cursor_obj.description]
 
@@ -67,33 +66,33 @@ def create_app(test_config=None):
 
     @app.route("/table")
     def view_table():
-        table = request.args.get("set")
-        subset = request.args.get("subset")
+        table = request.args.get("channel")
+        tlm_set = request.args.get("set")
 
-        if subset not in subsets:
-            abort(400, f"No such subset '{subset}'")
+        if tlm_set not in sets:
+            abort(400, f"No such subset '{tlm_set}'")
 
-        cursor_obj, columns = collect_data(subset, table)
+        cursor_obj, columns = collect_data(tlm_set, table)
 
         return render_template(
             "table.html",
             table=table,
             rows=cursor_obj,
             columns=columns,
-            subset=subset,
+            set=tlm_set,
         )
 
     @app.route("/plot")
     def view_plot():
-        table = request.args.get("set")
-        subset = request.args.get("subset")
+        table = request.args.get("channel")
+        tlm_set = request.args.get("set")
 
-        if subset not in subsets:
-            abort(400, f"No such subset '{subset}'")
+        if tlm_set not in sets:
+            abort(400, f"No such subset '{tlm_set}'")
 
-        cursor_obj, columns = collect_data(subset, table)
+        cursor_obj, columns = collect_data(tlm_set, table)
         params_list = collect_for_plot(cursor_obj)
-        filename = f"{table}_{subset}.png"
+        filename = f"{table}_{tlm_set}.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
         plot_telemetry(full_path, params_list, columns, table)
 
