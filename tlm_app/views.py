@@ -5,6 +5,7 @@ Application factory, configuration and URL description
 import os
 from datetime import datetime
 from flask import Flask, render_template, request, abort, send_file, redirect
+from flask.logging import create_logger
 from .upload import upload_file
 from .ltu_db import init_app, get_db
 from .subsets import sets
@@ -17,6 +18,7 @@ def create_app(test_config=None):
     """
 
     app = Flask(__name__, instance_relative_config=True)
+    app.logger = create_logger(app)
 
     app.config.from_mapping(
         # a default secret that should be overridden by instance config
@@ -70,9 +72,13 @@ def create_app(test_config=None):
         tlm_set = request.args.get("set")
 
         if tlm_set not in sets:
-            abort(400, f"No such subset '{tlm_set}'")
+            msg = f"No such subset '{tlm_set}'"
+            app.logger.error(msg)
+            abort(400, msg)
 
         cursor_obj, columns = collect_data(tlm_set, table)
+        msg = f"Build data table for {table} channel and {tlm_set.upper()} set"
+        app.logger.info(msg)
 
         return render_template(
             "table.html",
@@ -88,13 +94,18 @@ def create_app(test_config=None):
         tlm_set = request.args.get("set")
 
         if tlm_set not in sets:
-            abort(400, f"No such subset '{tlm_set}'")
+            msg = f"No such subset '{tlm_set}'"
+            app.logger.error(msg)
+            abort(400, msg)
 
         cursor_obj, columns = collect_data(tlm_set, table)
         params_list = collect_for_plot(cursor_obj)
         filename = f"{table}_{tlm_set}.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
         plot_telemetry(full_path, params_list, columns, table)
+
+        msg = f"Build data plot for {table} channel and {tlm_set.upper()} set"
+        app.logger.info(msg)
 
         return render_template(
             "plot.html",

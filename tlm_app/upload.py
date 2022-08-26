@@ -3,7 +3,7 @@ Uploading LTU traces
 """
 
 from typing import BinaryIO, cast
-from flask import flash, request, render_template
+from flask import flash, request, render_template, current_app
 from .packet import get_telemetry
 from .ltu_db import drop_table, create_table, insert_into_table, get_db
 
@@ -25,27 +25,36 @@ def upload_file():
     the browser submits an empty file without a filename.
     """
 
+    current_app.logger.info("Uploading the file")
+
     if request.method == "POST":
 
         if "file" not in request.files:
-            flash("No file part", "error")
+            msg = "No file part"
+            flash(msg, "error")
+            current_app.logger.error(msg)
 
         elif (file := request.files["file"]).filename == "":
-            flash("No selected file", "error")
+            msg = "No selected file"
+            flash(msg, "error")
+            current_app.logger.error(msg)
 
         elif file and allowed_file(file.filename):
             tlm, count = get_telemetry(cast(BinaryIO, file))
-
             conn = get_db()
             drop_table(conn, tlm)
             create_table(conn, tlm)
             insert_into_table(conn, tlm)
             conn.commit()
 
-            flash("Your file has been successfully uploaded!", "success")
-            flash(f"Read {count} packets.", "info")
+            msg = f"The file '{file.filename}' has been successfully uploaded"
+            current_app.logger.info(msg)
+            flash(msg, "success")
+            flash(f"Read {count} packets", "info")
 
         else:
-            flash("Wrong extension (expected *.tld)", "error")
+            msg = "Wrong extension (expected *.tld)"
+            flash(msg, "error")
+            current_app.logger.error(msg)
 
     return render_template("upload.html")
