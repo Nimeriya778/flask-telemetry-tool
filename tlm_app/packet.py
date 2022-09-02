@@ -3,28 +3,32 @@ Packets reading
 """
 
 from typing import BinaryIO
-from .ip import get_ltu_channel
+from .models import Telemetry
+from .database import db
+from .channel import get_ltu_channel
 from .cu import get_cutime
 from .brd import BrdTelemetry
 from .chg import ChgTelemetry
 from .ldd import LddTelemetry
 from .pls import PlsTelemetry
 
+
 PACKET_SIZE = 1092
 
 
-def get_telemetry(file: BinaryIO) -> tuple[dict[str, list[tuple]], int]:
+def get_telemetry(file: BinaryIO) -> int:
     """
-    Get telemetry data from packets.
+    Get number of telemetry packets.
     """
 
+    # pylint: disable=no-member
+
     count = 0
-    tlm: dict[str, list[tuple]] = {"LTU1.1": [], "LTU2.1": [], "LTU3.1": []}
 
     while packet := file.read(PACKET_SIZE):
 
         try:
-            channel = get_ltu_channel(packet)
+            channel_id = get_ltu_channel(packet)
         except KeyError:
             continue
 
@@ -34,12 +38,10 @@ def get_telemetry(file: BinaryIO) -> tuple[dict[str, list[tuple]], int]:
         ldd = LddTelemetry.load_from_packet(packet)
         pls = PlsTelemetry.load_from_packet(packet)
 
-        tlm[channel].append((cutime, brd, chg, ldd, pls))
+        tlm = Telemetry.from_columns(channel_id, cutime, brd, chg, ldd, pls)
+        db.session.add(tlm)
         count += 1
 
-    # Convert keys, since SQL doesn't allow using dots in queries
-    for key in tlm.copy():
-        new_key = key.replace(".", "_")
-        tlm[new_key] = tlm.pop(key)
+    db.session.commit()
 
-    return tlm, count
+    return count

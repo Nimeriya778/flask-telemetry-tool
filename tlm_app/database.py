@@ -2,38 +2,43 @@
 Declarative mapping construction
 """
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, registry
-from sqlalchemy.orm.decl_api import DeclarativeMeta
-
-engine = create_engine("sqlite://")
-db_session = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=engine)
-)
-mapper_registry = registry()
+from flask_sqlalchemy import SQLAlchemy
+from .ip_const import LTU_IP_DICT
+from .adj_const import RT_ADD_DICT
 
 
-class Base(metaclass=DeclarativeMeta):
-    """
-    Construct a base class for declarative class definitions.
-    The class is defined explicitly to support the Mypy plugin.
-    """
-
-    # pylint: disable=too-few-public-methods
-
-    __abstract__ = True
-
-    registry = mapper_registry
-    metadata = mapper_registry.metadata
-
-    __init__ = mapper_registry.constructor
+db = SQLAlchemy()
 
 
+# noinspection PyArgumentList
 def init_db():
     """
     Define models so that they will be registered properly on the metadata.
     """
 
-    import tlm_app.models
+    # pylint: disable=no-member
+    # pylint: disable=import-outside-toplevel
+    from tlm_app.models import Channel, Adjustment
 
-    Base.metadata.create_all(bind=engine)
+    db.create_all()
+
+    stmt = db.select([db.func.count()]).select_from(Channel)
+    if not db.session.execute(stmt).scalar():
+        for ch_ip, name in LTU_IP_DICT.items():
+            channel = Channel(name=name, ip=int(ch_ip))
+            db.session.add(channel)
+
+    stmt = db.select([db.func.count()]).select_from(Adjustment)
+    if not db.session.execute(stmt).scalar():
+        for name, value in RT_ADD_DICT.items():
+            stmt = db.select(Channel.id).where(Channel.name == name)
+            result = db.session.execute(stmt)
+            adj = Adjustment(
+                channel_id=result.first()[0],
+                ldd_rt1=value[0],
+                ldd_rt2=value[1],
+                ldd_rt3=value[2],
+            )
+            db.session.add(adj)
+
+    db.session.commit()

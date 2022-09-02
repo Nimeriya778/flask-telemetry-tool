@@ -5,7 +5,6 @@ Uploading LTU traces
 from typing import BinaryIO, cast
 from flask import flash, request, render_template, current_app
 from .packet import get_telemetry
-from .ltu_db import drop_table, create_table, insert_into_table, get_db
 
 ALLOWED_EXTENSIONS = {"tld"}
 
@@ -40,12 +39,7 @@ def upload_file():
             current_app.logger.error(msg)
 
         elif file and allowed_file(file.filename):
-            tlm, count = get_telemetry(cast(BinaryIO, file))
-            conn = get_db()
-            drop_table(conn, tlm)
-            create_table(conn, tlm)
-            insert_into_table(conn, tlm)
-            conn.commit()
+            count = get_telemetry(cast(BinaryIO, file))
 
             msg = f"The file '{file.filename}' has been successfully uploaded"
             current_app.logger.info(msg)

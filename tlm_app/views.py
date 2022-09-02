@@ -6,8 +6,8 @@ import os
 from datetime import datetime
 from flask import Flask, render_template, request, abort, send_file, redirect
 from flask.logging import create_logger
+from .database import db, init_db
 from .upload import upload_file
-from .ltu_db import init_app, get_db
 from .subsets import sets
 from .plot import collect_for_plot, plot_telemetry
 
@@ -17,6 +17,8 @@ def create_app(test_config=None):
     Create and configure an instance of the Flask application.
     """
 
+    # pylint: disable=no-member
+
     app = Flask(__name__, instance_relative_config=True)
     app.logger = create_logger(app)
 
@@ -24,8 +26,12 @@ def create_app(test_config=None):
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
         # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "ltu-tel.sqlite"),
+        SQLALCHEMY_DATABASE_URI="sqlite:///"
+        + os.path.join(app.instance_path, "ltu-tel.sqlite"),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
+
+    db.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -40,8 +46,9 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # register the database commands
-    init_app(app)
+    # Create the database
+    with app.app_context():
+        init_db()
 
     @app.route("/")
     def tlm(name=None):
@@ -59,16 +66,15 @@ def create_app(test_config=None):
     def represent_float(float_data):
         return f"{float_data:.3f}"
 
-    def collect_data(tlm_set, table):
-        script = f"SELECT {','.join(sets[tlm_set])} FROM {table}"
-        cursor_obj = get_db().cursor().execute(script)
-        columns = [i[0] for i in cursor_obj.description]
+    def collect_data(tlm_set, channel):
+        stmt = db.select(channel)
+        result = db.session.execute(stmt)
 
-        return cursor_obj, columns
+        return result.keys()
 
     @app.route("/table")
     def view_table():
-        table = request.args.get("channel")
+        channel = request.args.get("channel")
         tlm_set = request.args.get("set")
 
         if tlm_set not in sets:
@@ -76,21 +82,21 @@ def create_app(test_config=None):
             app.logger.error(msg)
             abort(400, msg)
 
-        cursor_obj, columns = collect_data(tlm_set, table)
-        msg = f"Build data table for {table} channel and {tlm_set.upper()} set"
+        rows, columns = collect_data(tlm_set, channel)
+        msg = f"Build data table for {channel} channel and {tlm_set.upper()} set"
         app.logger.info(msg)
 
         return render_template(
             "table.html",
-            table=table,
-            rows=cursor_obj,
+            table=channel,
+            rows=rows,
             columns=columns,
             set=tlm_set,
         )
 
     @app.route("/plot")
     def view_plot():
-        table = request.args.get("channel")
+        channel = request.args.get("channel")
         tlm_set = request.args.get("set")
 
         if tlm_set not in sets:
@@ -98,13 +104,13 @@ def create_app(test_config=None):
             app.logger.error(msg)
             abort(400, msg)
 
-        cursor_obj, columns = collect_data(tlm_set, table)
+        cursor_obj, columns = collect_data(tlm_set, channel)
         params_list = collect_for_plot(cursor_obj)
-        filename = f"{table}_{tlm_set}.png"
+        filename = f"{channel}_{tlm_set}.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
-        plot_telemetry(full_path, params_list, columns, table)
+        plot_telemetry(full_path, params_list, columns, channel)
 
-        msg = f"Build data plot for {table} channel and {tlm_set.upper()} set"
+        msg = f"Build data plot for {channel} channel and {tlm_set.upper()} set"
         app.logger.info(msg)
 
         return render_template(
