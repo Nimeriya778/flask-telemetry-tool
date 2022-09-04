@@ -7,6 +7,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, abort, send_file, redirect
 from flask.logging import create_logger
 from .database import db, init_db
+from .models import Channel, Telemetry
 from .upload import upload_file
 from .subsets import sets
 from .plot import collect_for_plot, plot_telemetry
@@ -67,9 +68,11 @@ def create_app(test_config=None):
         return f"{float_data:.3f}"
 
     def collect_data(tlm_set, channel):
-        stmt = db.select(channel)
+        stmt = db.select(Channel.id).where(Channel.name == channel)
         result = db.session.execute(stmt)
-
+        channel_id = result.first()[0]
+        stmt = db.select(Telemetry).where(Telemetry.channel_id == channel_id)
+        columns = db.select([tlm_set]).select_from(Channel)
         return result.keys()
 
     @app.route("/table")
