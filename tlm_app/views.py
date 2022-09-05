@@ -3,8 +3,9 @@ Application factory, configuration and URL description
 """
 
 import os
-from datetime import datetime
+from typing import Optional
 from flask import Flask, render_template, request, abort, send_file, redirect
+from werkzeug import Response
 from flask.logging import create_logger
 from .database import db, init_db
 from .models import Channel, Telemetry
@@ -13,7 +14,7 @@ from .subsets import sets
 from .plot import collect_for_plot, plot_telemetry
 
 
-def create_app(test_config=None):
+def create_app(test_config=None) -> Flask:
     """
     Create and configure an instance of the Flask application.
     """
@@ -52,31 +53,32 @@ def create_app(test_config=None):
         init_db()
 
     @app.route("/")
-    def tlm(name=None):
+    def tlm(name=None) -> str:
         return render_template("base.html", name=name)
 
     @app.route("/upload", methods=["GET", "POST"])
-    def tlm_upload():
+    def tlm_upload() -> str:
         return upload_file()
 
-    @app.template_filter("dt")
-    def to_time(timestamp):
-        return datetime.fromtimestamp(timestamp)
-
     @app.template_filter("fmt")
-    def represent_float(float_data):
+    def represent_float(float_data: float) -> str:
         return f"{float_data:.3f}"
 
-    def collect_data(tlm_set, channel):
+    def collect_data(tlm_set: str, channel: Optional[str]) -> tuple[list, list]:
         stmt = db.select(Channel.id).where(Channel.name == channel)
+        channel_id = db.session.execute(stmt).fetchone()[0]
+
+        columns = [db.column(x) for x in sets[tlm_set]]
+        stmt = (
+            db.select(columns)
+            .select_from(Telemetry)
+            .where(Telemetry.channel_id == channel_id)
+        )
         result = db.session.execute(stmt)
-        channel_id = result.first()[0]
-        stmt = db.select(Telemetry).where(Telemetry.channel_id == channel_id)
-        columns = db.select([tlm_set]).select_from(Channel)
-        return result.keys()
+        return list(result), result.keys()
 
     @app.route("/table")
-    def view_table():
+    def view_table() -> str:
         channel = request.args.get("channel")
         tlm_set = request.args.get("set")
 
@@ -98,7 +100,7 @@ def create_app(test_config=None):
         )
 
     @app.route("/plot")
-    def view_plot():
+    def view_plot() -> str:
         channel = request.args.get("channel")
         tlm_set = request.args.get("set")
 
@@ -122,12 +124,12 @@ def create_app(test_config=None):
         )
 
     @app.route("/plot/<filename>")
-    def show_plot(filename):
+    def show_plot(filename: str) -> Response:
         full_path = os.path.join(app.instance_path, "plots", filename)
         return send_file(full_path, mimetype="image/png")
 
     @app.route("/plot/<image>")
-    def open_image(filename):
+    def open_image(filename: str) -> Response:
         full_path = os.path.join(app.instance_path, "plots", filename)
         return redirect(full_path)
 
