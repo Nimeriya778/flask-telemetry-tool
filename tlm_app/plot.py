@@ -2,31 +2,54 @@
 Plot settings
 """
 
-from datetime import datetime
-from sqlite3 import Cursor
+from typing import Sequence
 import matplotlib  # type: ignore
 import matplotlib.dates as md  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
+from .database import db
+from .models import Channel, Telemetry
+from .subsets import sets
 
 matplotlib.use("Agg")
 
 
-def collect_for_plot(cursor_obj: Cursor) -> list[list]:
+def collect_data(tlm_set: str, channel: str) -> tuple[list[tuple], list[str]]:
+    """
+    Collect telemetry data for the specific LTU set and channel.
+    """
+
+    # pylint: disable=no-member
+
+    stmt = db.select(Channel.id).where(Channel.name == channel)
+    channel_id = db.session.execute(stmt).fetchone()[0]
+
+    columns = [db.column(x) for x in sets[tlm_set]]
+    stmt = (
+        db.select(columns)
+        .select_from(Telemetry)
+        .where(Telemetry.channel_id == channel_id)
+    )
+    result = db.session.execute(stmt)
+    return list(result), list(result.keys())
+
+
+def collect_for_plot(rows: list[tuple], columns: list[str]) -> list[list]:
     """
     Gather data into multiple lists.
     """
 
     params_list: list[list] = []
-    for _ in cursor_obj.description:
+    for _ in columns:
         params_list.append([])
-    for row in cursor_obj:
+
+    for row in rows:
         for index, elem in enumerate(row):
             params_list[index].append(elem)
     return params_list
 
 
 def plot_telemetry(
-    filename: str, params_list: list[list], columns: list[str], title: str = "LTU1_1"
+    filename: str, params_list: list[list], columns: Sequence[str], title: str
 ) -> None:
     """
     Create a plot.
@@ -41,13 +64,13 @@ def plot_telemetry(
     plt.ylabel(y_name, fontsize=16)
     plt.title(f"{title} {title_name}", fontsize=16)
     plt.xlabel("Time", fontsize=16)
-    params_list[0] = [md.date2num(datetime.fromtimestamp(i)) for i in params_list[0]]
+    print(md.date2num(params_list[0]))
     axes = plt.gca()
     fig.autofmt_xdate()
     xfmt = md.DateFormatter("%Y-%m-%d")
     axes.xaxis.set_major_formatter(xfmt)
     for param in params_list[1:]:
-        plt.plot(params_list[0], param)
+        plt.plot(md.date2num(params_list[0]), param)
 
     # Shows colored parameter names labels on a plot
     plt.legend(columns[1:], loc="best", prop={"size": 10})
@@ -55,7 +78,7 @@ def plot_telemetry(
     plt.savefig(filename)
 
 
-def get_labels(plot_list: list[str]) -> tuple[str, str]:
+def get_labels(plot_list: Sequence[str]) -> tuple[str, str]:
     """
     Get plots labels depending on data.
     """

@@ -3,23 +3,19 @@ Application factory, configuration and URL description
 """
 
 import os
-from typing import Optional
 from flask import Flask, render_template, request, abort, send_file, redirect
-from werkzeug import Response
 from flask.logging import create_logger
+from werkzeug import Response
 from .database import db, init_db
-from .models import Channel, Telemetry
 from .upload import upload_file
 from .subsets import sets
-from .plot import collect_for_plot, plot_telemetry
+from .plot import collect_data, collect_for_plot, plot_telemetry
 
 
 def create_app(test_config=None) -> Flask:
     """
     Create and configure an instance of the Flask application.
     """
-
-    # pylint: disable=no-member
 
     app = Flask(__name__, instance_relative_config=True)
     app.logger = create_logger(app)
@@ -64,23 +60,15 @@ def create_app(test_config=None) -> Flask:
     def represent_float(float_data: float) -> str:
         return f"{float_data:.3f}"
 
-    def collect_data(tlm_set: str, channel: Optional[str]) -> tuple[list, list]:
-        stmt = db.select(Channel.id).where(Channel.name == channel)
-        channel_id = db.session.execute(stmt).fetchone()[0]
-
-        columns = [db.column(x) for x in sets[tlm_set]]
-        stmt = (
-            db.select(columns)
-            .select_from(Telemetry)
-            .where(Telemetry.channel_id == channel_id)
-        )
-        result = db.session.execute(stmt)
-        return list(result), result.keys()
-
     @app.route("/table")
     def view_table() -> str:
         channel = request.args.get("channel")
         tlm_set = request.args.get("set")
+
+        if channel is None or tlm_set is None:
+            msg = "Missing arguments"
+            app.logger.error(msg)
+            abort(400, msg)
 
         if tlm_set not in sets:
             msg = f"No such subset '{tlm_set}'"
@@ -104,13 +92,18 @@ def create_app(test_config=None) -> Flask:
         channel = request.args.get("channel")
         tlm_set = request.args.get("set")
 
+        if channel is None or tlm_set is None:
+            msg = "Missing arguments"
+            app.logger.error(msg)
+            abort(400, msg)
+
         if tlm_set not in sets:
             msg = f"No such subset '{tlm_set}'"
             app.logger.error(msg)
             abort(400, msg)
 
-        cursor_obj, columns = collect_data(tlm_set, channel)
-        params_list = collect_for_plot(cursor_obj)
+        rows, columns = collect_data(tlm_set, channel)
+        params_list = collect_for_plot(rows, columns)
         filename = f"{channel}_{tlm_set}.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
         plot_telemetry(full_path, params_list, columns, channel)
