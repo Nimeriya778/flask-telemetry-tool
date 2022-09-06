@@ -2,7 +2,7 @@
 Declarative mapping construction
 """
 
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy  # type: ignore
 from .ip_const import LTU_IP_DICT
 from .adj_const import RT_ADD_DICT
 

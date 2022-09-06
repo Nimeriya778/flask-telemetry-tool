@@ -2,8 +2,9 @@
 Declaring ORM mapped classes
 """
 
+from typing import TypeAlias
 from datetime import datetime
-from flask_sqlalchemy.model import DefaultMeta
+from flask_sqlalchemy.model import DefaultMeta  # type: ignore
 from .database import db
 
 
@@ -83,10 +84,10 @@ class Telemetry(BaseModel):
     def from_columns(
         channel_id,
         cutm: datetime,
-        brd: "BrdTelemetry",
-        chg: "ChgTelemetry",
-        ldd: "LddTelemetry",
-        pls: "PlsTelemetry",
+        brd: TypeAlias = "BrdTelemetry",
+        chg: TypeAlias = "ChgTelemetry",
+        ldd: TypeAlias = "LddTelemetry",
+        pls: TypeAlias = "PlsTelemetry",
     ):
         """
         Unite columns from telemetry file to fill the table.
