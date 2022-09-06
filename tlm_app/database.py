@@ -16,8 +16,8 @@ def init_db():
     Define models so that they will be registered properly on the metadata.
     """
 
-    # pylint: disable=no-member
-    # pylint: disable=import-outside-toplevel
+    # pylint: disable=no-member,import-outside-toplevel,cyclic-import
+
     from tlm_app.models import Channel, Adjustment
 
     db.create_all()

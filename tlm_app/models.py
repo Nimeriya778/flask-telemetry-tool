@@ -10,8 +10,7 @@ from .database import db
 
 BaseModel: DefaultMeta = db.Model
 
-# pylint: disable=too-few-public-methods
-# pylint: disable=no-member
+# pylint: disable=too-few-public-methods,no-member
 
 
 class Channel(BaseModel):
