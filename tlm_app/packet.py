@@ -3,6 +3,7 @@ Packets reading
 """
 
 from typing import BinaryIO
+from flask import current_app
 from .models import Telemetry
 from .database import db
 from .channel import get_ltu_channel
@@ -25,6 +26,8 @@ def get_telemetry(file: BinaryIO) -> int:
 
     count = 0
     db.session.execute(db.delete(Telemetry))
+    msg = "Delete existing records from the database"
+    current_app.logger.info(msg)
 
     while packet := file.read(PACKET_SIZE):
 
@@ -44,5 +47,7 @@ def get_telemetry(file: BinaryIO) -> int:
         count += 1
 
     db.session.commit()
+    msg = "Write new records to the database"
+    current_app.logger.info(msg)
 
     return count
