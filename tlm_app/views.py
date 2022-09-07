@@ -60,8 +60,7 @@ def create_app(test_config=None) -> Flask:
     def represent_float(float_data: float) -> str:
         return f"{float_data:.3f}"
 
-    @app.route("/table")
-    def view_table() -> str:
+    def validate_request() -> tuple[str, str]:
         channel = request.args.get("channel")
         tlm_set = request.args.get("set")
 
@@ -75,6 +74,12 @@ def create_app(test_config=None) -> Flask:
             app.logger.error(msg)
             abort(400, msg)
 
+        return channel, tlm_set
+
+    @app.route("/table")
+    def view_table() -> str:
+
+        tlm_set, channel = validate_request()
         rows, columns = collect_data(tlm_set, channel)
         msg = f"Build data table for {channel} channel and {tlm_set.upper()} set"
         app.logger.info(msg)
@@ -89,19 +94,8 @@ def create_app(test_config=None) -> Flask:
 
     @app.route("/plot")
     def view_plot() -> str:
-        channel = request.args.get("channel")
-        tlm_set = request.args.get("set")
 
-        if channel is None or tlm_set is None:
-            msg = "Missing arguments"
-            app.logger.error(msg)
-            abort(400, msg)
-
-        if tlm_set not in sets:
-            msg = f"No such subset '{tlm_set}'"
-            app.logger.error(msg)
-            abort(400, msg)
-
+        tlm_set, channel = validate_request()
         rows, columns = collect_data(tlm_set, channel)
         params_list = collect_for_plot(rows, columns)
         filename = f"{channel}_{tlm_set}.png"
