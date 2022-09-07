@@ -64,7 +64,6 @@ def plot_telemetry(
     plt.ylabel(y_name, fontsize=16)
     plt.title(f"{title} {title_name}", fontsize=16)
     plt.xlabel("Time", fontsize=16)
-    print(md.date2num(params_list[0]))
     axes = plt.gca()
     fig.autofmt_xdate()
     xfmt = md.DateFormatter("%Y-%m-%d")

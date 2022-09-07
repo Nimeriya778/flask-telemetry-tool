@@ -24,6 +24,7 @@ def get_telemetry(file: BinaryIO) -> int:
     # pylint: disable=no-member
 
     count = 0
+    db.session.execute(db.delete(Telemetry))
 
     while packet := file.read(PACKET_SIZE):
 
