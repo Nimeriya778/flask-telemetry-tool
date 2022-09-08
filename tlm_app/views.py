@@ -54,6 +54,7 @@ def create_app(test_config=None) -> Flask:
 
     @app.route("/upload", methods=["GET", "POST"])
     def tlm_upload() -> str:
+        app.logger.info("Uploading the file")
         return upload_file()
 
     @app.template_filter("fmt")
@@ -66,23 +67,28 @@ def create_app(test_config=None) -> Flask:
 
         if channel is None or tlm_set is None:
             msg = "Missing arguments"
-            app.logger.error(msg)
-            abort(400, msg)
+            raise ValueError(msg)
 
         if tlm_set not in sets:
             msg = f"No such subset '{tlm_set}'"
-            app.logger.error(msg)
-            abort(400, msg)
+            raise ValueError(msg)
 
-        return channel, tlm_set
+        return tlm_set, channel
+
+    # pylint: disable=logging-fstring-interpolation
 
     @app.route("/table")
     def view_table() -> str:
+        try:
+            tlm_set, channel = validate_request()
+        except ValueError as err:
+            app.logger.error(str(err))
+            abort(400, str(err))
 
-        tlm_set, channel = validate_request()
+        # noinspection PyUnboundLocalVariable
         rows, columns = collect_data(tlm_set, channel)
-        msg = f"Build data table for {channel} channel and {tlm_set.upper()} set"
-        app.logger.info(msg)
+        app.logger.debug(f"Collected {len(rows)} rows, {len(columns)} columns")
+        app.logger.info(f"Building data table for {channel} channel and {tlm_set.upper()} set")
 
         return render_template(
             "table.html",
@@ -94,16 +100,20 @@ def create_app(test_config=None) -> Flask:
 
     @app.route("/plot")
     def view_plot() -> str:
+        try:
+            tlm_set, channel = validate_request()
+        except ValueError as err:
+            app.logger.error(str(err))
+            abort(400, str(err))
 
-        tlm_set, channel = validate_request()
+        # noinspection PyUnboundLocalVariable
         rows, columns = collect_data(tlm_set, channel)
         params_list = collect_for_plot(rows, columns)
-        filename = f"{channel}_{tlm_set}.png"
+        app.logger.info(f"Building the plot for {channel} channel and {tlm_set.upper()} set")
+        filename = f"{channel.lower().replace('.', '_')}_{tlm_set}.png"
         full_path = os.path.join(app.instance_path, "plots", filename)
         plot_telemetry(full_path, params_list, columns, channel)
-
-        msg = f"Build data plot for {channel} channel and {tlm_set.upper()} set"
-        app.logger.info(msg)
+        app.logger.info(f"Saved {filename}")
 
         return render_template(
             "plot.html",
