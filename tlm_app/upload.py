@@ -24,8 +24,6 @@ def upload_file():
     the browser submits an empty file without a filename.
     """
 
-    current_app.logger.info("Uploading the file")
-
     if request.method == "POST":
 
         if "file" not in request.files:
@@ -45,6 +43,7 @@ def upload_file():
             current_app.logger.info(msg)
             flash(msg, "success")
             flash(f"Read {count} packets", "info")
+            current_app.logger.info(f"Added {count} packets to the database")
 
         else:
             msg = "Wrong extension (expected *.tld)"

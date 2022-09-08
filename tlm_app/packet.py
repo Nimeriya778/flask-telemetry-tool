@@ -26,8 +26,7 @@ def get_telemetry(file: BinaryIO) -> int:
 
     count = 0
     db.session.execute(db.delete(Telemetry))
-    msg = "Delete existing records from the database"
-    current_app.logger.info(msg)
+    current_app.logger.info("Deleting existing records from the database")
 
     while packet := file.read(PACKET_SIZE):
 
@@ -47,7 +46,5 @@ def get_telemetry(file: BinaryIO) -> int:
         count += 1
 
     db.session.commit()
-    msg = "Write new records to the database"
-    current_app.logger.info(msg)
 
     return count
