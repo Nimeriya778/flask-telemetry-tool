@@ -37,7 +37,7 @@ div {
   background: #d0f6d2;
 }
 
-.upload, .uploaded_file, .plot, .visual {
+.upload, .uploaded_file, .plot, .table, .visual {
   background: #dcccf7;
 }
 
@@ -67,12 +67,12 @@ input::file-selector-button {
   padding: 8px 15px;
 }
 
-#upload_button, #plot_button {
+#upload_button, #plot_button, #view_button {
   padding: 10px 20px;
 }
 
 select {
-  width: 110px;
+  width: 130px;
 }
 
 .channel select:hover, #view_button:hover {
@@ -81,7 +81,7 @@ select {
 }
 
 #view_button {
-  width: 215px;
+  width: 225px;
 }
 
 select, #view_button {
@@ -126,7 +126,6 @@ body.flash {
 }
 
 .table {
-  background: #dcccf7;
   overflow: scroll;
   height: 600px;
 }
@@ -160,7 +159,8 @@ img {
 
 @media screen and (max-width: 992px) {
   body {
-    width: 50%;
+    width: 60%;
+    margin-top: 180px;
   }
 
   img {
@@ -173,10 +173,14 @@ img {
 
   body.image {
     width: 760px;
-    margin-top: 180px;
+    margin-top: 290px;
   }
 
   .visual {
     padding: 10px;
+  }
+
+  html {
+  background-size: 50%;
   }
 }
