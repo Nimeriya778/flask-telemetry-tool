@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Visualization</h2>
+
 <body class="image">
 <div class="visual">
+  <h2>Visualization</h2>
   <a href="{{ url_for('show_plot', filename=filename) }}">
     <img src="{{ url_for('show_plot', filename=filename) }}">
   </a>
