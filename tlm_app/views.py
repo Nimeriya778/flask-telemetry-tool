@@ -88,7 +88,9 @@ def create_app(test_config=None) -> Flask:
         # noinspection PyUnboundLocalVariable
         rows, columns = collect_data(tlm_set, channel)
         app.logger.debug(f"Collected {len(rows)} rows, {len(columns)} columns")
-        app.logger.info(f"Building data table for {channel} channel and {tlm_set.upper()} set")
+        app.logger.info(
+            f"Building data table for {channel} channel and {tlm_set.upper()} set"
+        )
 
         return render_template(
             "table.html",
@@ -109,9 +111,13 @@ def create_app(test_config=None) -> Flask:
         # noinspection PyUnboundLocalVariable
         rows, columns = collect_data(tlm_set, channel)
         params_list = collect_for_plot(rows, columns)
-        app.logger.info(f"Building the plot for {channel} channel and {tlm_set.upper()} set")
+        app.logger.info(
+            f"Building the plot for {channel} channel and {tlm_set.upper()} set"
+        )
         filename = f"{channel.lower().replace('.', '_')}_{tlm_set}.png"
-        full_path = os.path.join(app.instance_path, "plots", filename)
+        path = os.path.join(app.instance_path, "plots")
+        os.makedirs(path, exist_ok=True)
+        full_path = os.path.join(path, filename)
         plot_telemetry(full_path, params_list, columns, channel)
         app.logger.info(f"Saved {filename}")
 
