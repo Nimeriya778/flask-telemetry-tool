@@ -6,6 +6,7 @@ from ipaddress import IPv4Address
 from .models import Channel
 from .database import db
 from .ip import IP_OFF
+from .cu_unit import CU_IP
 
 CHANNELS = {}
 
@@ -33,3 +34,14 @@ def get_ltu_channel(packet: bytes) -> int:
     ch_ip = int(IPv4Address(packet[IP_OFF: IP_OFF + 4]))
 
     return CHANNELS[ch_ip]
+
+
+def is_cu_packet(packet: bytes) -> bool:
+    """
+    Check if the packet is a CU packet
+    """
+
+    ch_ip = IPv4Address(packet[IP_OFF: IP_OFF + 4])
+    # sub_type = unpack_from("<H", packet, 4)
+
+    return CU_IP == ch_ip

@@ -46,6 +46,7 @@ class Telemetry(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     channel_id = db.Column(db.Integer, db.ForeignKey("channel.id"))
     cutime = db.Column(db.DateTime)
+    ft_num = db.Column(db.Integer)
     brd_lt1 = db.Column(db.Float)
     brd_lt2 = db.Column(db.Float)
     brd_lt3 = db.Column(db.Float)
@@ -83,6 +84,7 @@ class Telemetry(BaseModel):
     def from_columns(
         channel_id,
         cutm: datetime,
+        ft_num: TypeAlias = "CUTelemetry",
         brd: TypeAlias = "BrdTelemetry",
         chg: TypeAlias = "ChgTelemetry",
         ldd: TypeAlias = "LddTelemetry",
@@ -95,6 +97,7 @@ class Telemetry(BaseModel):
         return Telemetry(
             channel_id=channel_id,
             cutime=cutm,
+            ft_num=ft_num,
             brd_lt1=brd.lt1,
             brd_lt2=brd.lt2,
             brd_lt3=brd.lt3,
