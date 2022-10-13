@@ -18,15 +18,22 @@
 <div class="upload">
   <h1>Upload a file</h1>
   <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name=file>
-      <br><br>
-      <input id="upload_button" type="submit" value="Upload">
+    <input type="file" name=file>
+    <br><br>
+    <input id="upload_button" type="submit" value="Upload">
   </form>
 </div>
 
 <div class="channel">
   <h1>View LTU table</h1>
     <form action="/table">
+      <label for="route">Route</label>
+      <select name="route" id="route">
+        {% for number in route %}
+          <option value="{{ number }}">{{ number }}</option>
+        {% endfor %}
+      </select>
+      <br><br>
       <label for="channel">Channel</label>
       <select name="channel" id="channel">
         <optgroup label="LTU channels">

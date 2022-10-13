@@ -13,7 +13,19 @@ from .subsets import sets
 matplotlib.use("Agg")
 
 
-def collect_data(tlm_set: str, channel: str) -> tuple[list[tuple], list[str]]:
+def view_routes() -> list[int]:
+    """
+    Get list of routes to pass in 'base.html' template
+    """
+
+    stmt = db.select([db.distinct(Telemetry.ft_num)])
+    routes = db.session.execute(stmt)
+    return [x[0] for x in routes]
+
+
+def collect_data(
+    tlm_set: str, channel: str, task_num: int
+) -> tuple[list[tuple], list[str]]:
     """
     Collect telemetry data for the specific LTU set and channel.
     """
@@ -28,7 +40,9 @@ def collect_data(tlm_set: str, channel: str) -> tuple[list[tuple], list[str]]:
         db.select(columns)
         .select_from(Telemetry)
         .where(Telemetry.channel_id == channel_id)
+        .where(Telemetry.ft_num == task_num)
     )
+    print(stmt)
     result = db.session.execute(stmt)
     return list(result), list(result.keys())
 

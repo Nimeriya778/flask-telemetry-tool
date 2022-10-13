@@ -37,12 +37,12 @@ def upload_file():
             current_app.logger.error(msg)
 
         elif file and allowed_file(file.filename):
-            count = get_telemetry(cast(BinaryIO, file))
+            count, ft_lst = get_telemetry(cast(BinaryIO, file))
 
             msg = f"The file '{file.filename}' has been successfully uploaded"
             current_app.logger.info(msg)
             flash(msg, "success")
-            flash(f"Read {count} packets", "info")
+            flash(f"Read {count} packets and got routes: {ft_lst}", "info")
             current_app.logger.info(f"Added {count} packets to the database")
 
         else:
