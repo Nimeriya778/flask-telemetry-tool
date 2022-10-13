@@ -3,9 +3,10 @@ LTU channels processing
 """
 
 from ipaddress import IPv4Address
+from struct import unpack_from
 from .models import Channel
 from .database import db
-from .ip import IP_OFF
+from .ip import IP_OFF, DATA_OFF
 from .cu_unit import CU_IP
 
 CHANNELS = {}
@@ -42,6 +43,6 @@ def is_cu_packet(packet: bytes) -> bool:
     """
 
     ch_ip = IPv4Address(packet[IP_OFF: IP_OFF + 4])
-    # sub_type = unpack_from("<H", packet, 4)
+    sub_type = unpack_from("<H", packet, DATA_OFF + 8)
 
-    return CU_IP == ch_ip
+    return ch_ip == CU_IP and sub_type[0] == 1
