@@ -10,7 +10,7 @@ from ipaddress import IPv4Address
 from .ip import DATA_OFF
 
 
-CU_PAYLOAD_FMT = ">I"
+CU_PAYLOAD_FMT = "<I"
 CU_UNIT_OFF = DATA_OFF + 150
 CU_IP = IPv4Address("255.255.255.255")
 
