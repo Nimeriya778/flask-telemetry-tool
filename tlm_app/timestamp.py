@@ -17,3 +17,11 @@ def timestamp_to_unixtime(tstamp: int) -> datetime:
     """
 
     return SCS_EPOCH + timedelta(seconds=(TIME_UNIT * tstamp))
+
+
+def ton_to_unixtime(t_on: int) -> datetime:
+    """
+    Convert mission scenario system time to Unix time.
+    """
+
+    return SCS_EPOCH + timedelta(seconds=t_on)
