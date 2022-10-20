@@ -29,8 +29,8 @@
     <form action="/table">
       <label for="route">Route</label>
       <select name="route" id="route">
-        {% for number in route %}
-          <option value="{{ number }}">{{ number }}</option>
+        {% for number, date in route %}
+          <option value="{{ number }}">{{ date }}</option>
         {% endfor %}
       </select>
       <br><br>

@@ -3,6 +3,7 @@ Plot settings
 """
 
 from typing import Sequence
+from datetime import datetime
 import matplotlib  # type: ignore
 import matplotlib.dates as md  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -13,18 +14,22 @@ from .subsets import sets
 matplotlib.use("Agg")
 
 
-def view_routes() -> list[int]:
+# pylint: disable=no-member
+
+
+def view_routes() -> list[tuple]:
     """
     Get list of routes to pass in 'base.html' template
     """
 
-    stmt = db.select([db.distinct(Telemetry.ft_num)])
+    stmt = db.select([db.distinct(Telemetry.ft_t_on)])
     routes = db.session.execute(stmt)
-    return [x[0] for x in routes]
+
+    return [(int(x[0].timestamp()), x[0]) for x in routes]
 
 
 def collect_data(
-    tlm_set: str, channel: str, task_num: int
+    tlm_set: str, channel: str, ft_t_on: datetime
 ) -> tuple[list[tuple], list[str]]:
     """
     Collect telemetry data for the specific LTU set and channel.
@@ -40,7 +45,7 @@ def collect_data(
         db.select(columns)
         .select_from(Telemetry)
         .where(Telemetry.channel_id == channel_id)
-        .where(Telemetry.ft_num == task_num)
+        .where(Telemetry.ft_t_on == ft_t_on)
     )
     print(stmt)
     result = db.session.execute(stmt)

@@ -3,7 +3,7 @@
 
 <body>
 <div class="table">
-  <h2>{{ table|upper|replace("_", ".") }} channel, {{set|upper|replace("_", ".") }} set, route number {{ route }}:</h2>
+  <h2>{{ table|upper|replace("_", ".") }} channel, {{set|upper|replace("_", ".") }} set, route time {{ route }}:</h2>
   <table>
     <thead>
       <tr>
@@ -31,7 +31,7 @@
   <form action="/plot">
     <input type="hidden" name="channel" id="channel" value="{{ table }}">
     <input type="hidden" name="set" id="set" value="{{ set }}">
-    <input type="hidden" name="route" id="route" value="{{ route }}">
+    <input type="hidden" name="route" id="route" value="{{ time }}">
     <input id="plot_button" type="submit" value="Plot">
   </form>
 </div>
